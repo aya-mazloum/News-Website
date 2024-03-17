@@ -15,23 +15,16 @@ const addFailNote = $("#add-fail-note");
 
 
 const loadNews = () => {
-    fetch('http://localhost/News-Website/Backend/news.php', {
-        method: 'GET'
-    }).then((response) => {
-        return response.json();
-    }).then((data) => {
-        displayNews(data);
-    }).catch((error) => {
-        console.error(error);
-    })
+    $.ajax({
+        url: 'http://localhost/News-Website/Backend/news.php',
+        success: (data) => { displayNews(data); },
+        error: (error) => { console.error("Error fetching data:", error); }
+    });
 };
 
 const displayNews = (data) => {
     container.html('');
-
-    data.news?.forEach((newsItem) => {
-        generateNewsItem(newsItem);
-    });
+    data.news?.forEach((newsItem) => { generateNewsItem(newsItem); });
 };
 
 const generateNewsItem = (newsItem) => {
@@ -47,59 +40,52 @@ const generateNewsItem = (newsItem) => {
     container.append(newsItemHtml);
 };
 
-const addNews = async () => {
-    try {
-        requiredNote.addClass('hidden');
-        addFailNote.addClass('hidden');
+const addNews = () => {
+    requiredNote.addClass('hidden');
+    addFailNote.addClass('hidden');
 
-        if (!titleInput.val() || !contentInput.val() || !authorInput.val()) { note.removeClass('hidden'); }
+    if (!titleInput.val() || !contentInput.val() || !authorInput.val()) { note.removeClass('hidden'); }
 
-        const currentDate = new Date();
+    const currentDate = new Date();
 
-        const year = currentDate.getFullYear();
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        const day = String(currentDate.getDate()).padStart(2, '0');
-        const hours = String(currentDate.getHours()).padStart(2, '0');
-        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
 
-        const formattedDatetime = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+    const formattedDatetime = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
 
-        const formData = new FormData();
+    $.ajax({
+        url: 'http://localhost/News-Website/Backend/news.php',
+        type: "POST",
+        data: {
+            title: titleInput.val(),
+            content: contentInput.val(),
+            author: authorInput.val(),
+            publish_date: formattedDatetime,
+        },
+        dataType: "json", 
+        success: (data) => {
+            $("input[type='text']").val("");
+            popup.addClass('hidden');
 
-        formData.append('title', titleInput.val());
-        formData.append('content', contentInput.val());
-        formData.append('author', authorInput.val());
-        formData.append('publish_date', formattedDatetime);
-        console.log(formattedDatetime);
-
-        const response = await axios.post('http://localhost/News-Website/Backend/news.php', formData);
-
-        if (response.data.status === 'Failed') {
+            loadNews();
+        },
+        error: (error) => {
             addFailNote.removeClass('hidden');
+            console.error("Error fetching data:", error);
             return;
         }
-        
-        $("input[type='text']").val("");
-        popup.addClass('hidden');
-
-        loadNews();
-
-    } catch (e) {
-        console.error(e);
-    }
+    });
 };
 
 
 
+createButton.click(() => { addNews(); });
 
-createButton.click(() => {
-    addNews();
-});
-
-addButton.click(() => {
-    popup.removeClass('hidden');
-});
+addButton.click(() => { popup.removeClass('hidden'); });
 
 cancelButton.click(() => {
     $("input[type='text']").val("");
