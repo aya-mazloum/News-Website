@@ -4,8 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live News</title>
+    <link rel="stylesheet" href="./styles/home.css">
+    <link rel="stylesheet" href="./styles/utilities.css">
 </head>
 <body>
-    <h1>Live News</h1>
+    <main class="flex column center">
+        <h1>Live News</h1>
+
+        <div class="flex center popup hidden" id="add-popup">
+            <div class="flex column center">
+              <div class="flex column input">
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title-input">
+              </div>
+
+              <div class="flex column input">
+                <label for="content">Content</label>
+                <input type="text" name="content" id="content-input">
+              </div>
+
+              <div class="flex column input">
+                <label for="author">Author</label>
+                <input type="text" name="author" id="author-input">
+              </div>
+      
+              <div class="flex row between gap-20">
+                <button class="btn" id="create-button">Create</button>
+                <button class="btn" id="cancel-button">Cancel</button>
+              </div>
+            </div>
+        </div>
+
+        <button class="btn news-btn" id="add-button">Add News</button>
+
+        <div class="container flex column center" id="container">
+            <div class="news-item flex column">
+                <h2>Title</h2>
+                <p>Content</p>
+                <div class="author-date flex row">
+                    <p>Author</p>
+                    <p>date</p>
+                </div>
+            </div>
+            <div class="news-item flex column">
+                <h2>Title</h2>
+                <p>Content</p>
+                <div class="author-date flex row">
+                    <p>Author</p>
+                    <p>date</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="./scripts/main.js"></script>
 </body>
 </html>
