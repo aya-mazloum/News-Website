@@ -9,6 +9,8 @@ const authorInput = $("#author-input");
 const popup = $("#add-popup");
 const container = $("#container");
 
+const requiredNote = $("#required-note");
+const addFailNote = $("#add-fail-note");
 
 
 
@@ -45,6 +47,48 @@ const generateNewsItem = (newsItem) => {
     container.append(newsItemHtml);
 };
 
+const addNews = async () => {
+    try {
+        requiredNote.addClass('hidden');
+        addFailNote.addClass('hidden');
+
+        if (!titleInput.val() || !contentInput.val() || !authorInput.val()) { note.removeClass('hidden'); }
+
+        const currentDate = new Date();
+
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const hours = String(currentDate.getHours()).padStart(2, '0');
+        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+        const formattedDatetime = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+
+        const formData = new FormData();
+
+        formData.append('title', titleInput.val());
+        formData.append('content', contentInput.val());
+        formData.append('author', authorInput.val());
+        formData.append('publish_date', formattedDatetime);
+        console.log(formattedDatetime);
+
+        const response = await axios.post('http://localhost/News-Website/Backend/news.php', formData);
+
+        if (response.data.status === 'Failed') {
+            addFailNote.removeClass('hidden');
+            return;
+        }
+        
+        $("input[type='text']").val("");
+        popup.addClass('hidden');
+
+        loadNews();
+
+    } catch (e) {
+        console.error(e);
+    }
+};
 
 
 
@@ -59,6 +103,8 @@ addButton.click(() => {
 
 cancelButton.click(() => {
     $("input[type='text']").val("");
+    requiredNote.addClass('hidden');
+    addFailNote.addClass('hidden');
     popup.addClass('hidden');
 });
 
