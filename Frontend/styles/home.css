@@ -20,6 +20,12 @@ main > h1 {
   width: 100vw;
 }
 
+.note {
+  font-size: small;
+  color: #b71717;
+  align-self: start;
+}
+
 .popup > div {
   background-color: white;
   padding: 20px;

@@ -52,7 +52,7 @@
                 $news[] = $newsItem;
             }
             $response["status"] = "Success";
-            $response["news"] = $newsItem;
+            $response["news"] = $news;
         }
         return $response;
     }
